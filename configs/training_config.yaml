@@ -1,0 +1,85 @@
+# Training Configuration — RL Exoskeleton Controller
+# Based on Luo et al. (Nature 2024) + MASS base model
+
+# Simulation
+sim:
+  sim_hz: 500                    # 500 Hz physics (paper dt=0.002)
+  con_hz: 100                    # 100 Hz control (paper control_dt=0.01)
+  substeps: 5                    # sim_hz / con_hz
+  episode_length_s: 10
+  gravity: [0, -9.8, 0]
+
+# PPO Hyperparameters
+ppo:
+  lr: 1.0e-4
+  gamma: 0.99
+  gae_lambda: 0.99
+  clip_ratio: 0.2
+  entropy_coef: -0.001
+  num_epochs: 10
+  batch_size: 128
+  num_envs: 16
+  replay_buffer_size: 30000
+  max_iterations: 3500
+  max_grad_norm: 0.5
+
+# Muscle NN training
+muscle:
+  num_epochs: 5
+  batch_size: 256
+  layers: [512, 256, 256]        # Paper sizes (pseudocode uses [1024, 512, 512])
+  input_std: 200.0
+
+# Network architectures
+networks:
+  human:
+    layers: [256, 256]
+    obs_dim: 136
+    act_dim: 50
+  exo:
+    layers: [128, 64]
+    obs_dim: 16                  # 4 timesteps x 4 values (l/r hip angle/vel)
+    act_dim: 2                   # Left/right hip position targets
+  muscle:
+    num_muscles: 208             # Paper subset (284 total in MASS)
+    lower_limb_muscles: 108      # For exo reward computation
+
+# Exoskeleton
+exo:
+  total_mass_kg: 3.2
+  max_torque_nm: 18.0
+  pd_kp: 50.0
+  pd_kv: 14.14
+
+# Human PD controller
+human_pd:
+  kp: 50.0
+  kv: 14.14
+
+# Reward weights (paper values)
+reward:
+  human:
+    w_p: 0.75                    # Joint tracking
+    w_root: 0.5                  # Pelvis tracking
+    w_cop: 0.2                   # Center of pressure
+    sigma_cop: 10.0
+  exo:
+    w_m: 0.5                     # Muscle activation minimization
+    w_as: 0.2                    # Action smoothness
+    w_tau: 0.1                   # Exo energy penalty
+    w_p: 0.75                    # Joint tracking (shared with human)
+    w_root: 0.5
+    w_cop: 0.2
+
+# Domain randomization
+domain_rand:
+  enabled: true
+  muscle_force_scale: [0.8, 1.2]
+  body_mass_scale: [0.9, 1.1]
+  ground_friction: [0.7, 1.1]
+  exo_mass_scale: [0.9, 1.1]
+  exo_inertia_scale: [0.9, 1.1]
+  exo_com_offset_m: [-0.02, 0.02]
+  exo_motor_friction_nm: [0.0, 0.3]
+  observation_latency_ms: [0, 10]
+  observation_noise_std_rad: 0.01
