@@ -1,0 +1,34 @@
+<Skeleton name="Exoskeleton">
+    <!-- ExoWaist: sits on human lower back/pelvis. FreeJoint root (held by bushing forces). -->
+    <!-- Placeholder geometry: paper values 1.6 kg. Replace with SolidWorks data later. -->
+    <Node name="ExoWaist" parent="None">
+        <Body type="Box" mass="1.6" size="0.25 0.10 0.05" contact="Off" color="0.8 0.2 0.2 1.0">
+            <Transformation linear="1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0" translation="0.0 0.98 -0.10"/>
+        </Body>
+        <Joint type="Free">
+            <Transformation linear="1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0" translation="0.0 0.98 -0.10"/>
+        </Joint>
+    </Node>
+
+    <!-- ExoThighR: right thigh link with hip motor. RevoluteJoint at human right hip. -->
+    <!-- Joint position matches FemurR hip joint in human.xml: (-0.0903, 0.9337, -0.0116) -->
+    <Node name="ExoThighR" parent="ExoWaist">
+        <Body type="Box" mass="0.4" size="0.06 0.20 0.06" contact="Off" color="0.9 0.3 0.3 1.0">
+            <Transformation linear="1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0" translation="-0.12 0.80 -0.02"/>
+        </Body>
+        <Joint type="Revolute" axis="1.0 0.0 0.0" lower="-1.5" upper="1.5">
+            <Transformation linear="1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0" translation="-0.0903 0.9337 -0.0116"/>
+        </Joint>
+    </Node>
+
+    <!-- ExoThighL: left thigh link with hip motor. RevoluteJoint at human left hip. -->
+    <!-- Joint position matches FemurL hip joint in human.xml: (0.0903, 0.9337, -0.0116) -->
+    <Node name="ExoThighL" parent="ExoWaist">
+        <Body type="Box" mass="0.4" size="0.06 0.20 0.06" contact="Off" color="0.9 0.3 0.3 1.0">
+            <Transformation linear="1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0" translation="0.12 0.80 -0.02"/>
+        </Body>
+        <Joint type="Revolute" axis="1.0 0.0 0.0" lower="-1.5" upper="1.5">
+            <Transformation linear="1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0" translation="0.0903 0.9337 -0.0116"/>
+        </Joint>
+    </Node>
+</Skeleton>
